@@ -1,0 +1,74 @@
+html, body{
+  height: 100%;
+}
+
+label, body{
+  color: #EEEEEE;
+}
+
+label, .login-form, .signup-form{
+  background-color: #393E46;
+}
+
+html{
+  display: table;
+  margin: auto;
+}
+
+.login-page, .main-page{
+  background-color: #222831;
+  font-family: monospace;
+}
+
+.login-page, .search-form, .public-key-display, .reset-form {
+  display: table-cell;
+}
+
+.login-page{
+  text-align: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.main-page{
+  width: 1440px;
+}
+
+.search-form, .public-key-display, .reset-form{
+  width: 1200px;
+  padding-right: 30px;
+  padding-left: 30px;
+}
+
+.text-box{
+  padding: 10px;
+}
+
+.public-key-display{
+  color: #000000;
+}
+
+
+.login-form, .signup-form{
+  width: 400px;
+  height: 480px;
+  display: block;
+  padding:5px;
+  padding-right: 15px;
+  padding-left: 15px;
+  border-radius: 10px;
+}
+
+label{
+  float: left;
+  padding: 10px;
+  padding-left: 0px;
+}
+
+.login-button{
+  margin-top: 120px;
+}
+
+.signup-button{
+  margin-top: 30px;
+}
