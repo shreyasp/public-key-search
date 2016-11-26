@@ -27,7 +27,13 @@ class UserController extends Controller
       $password = $request->input('password');
       $fullname = $request->input('fullname');
 
-      list($firstName, $lastName) = explode(" ", $fullname); // Split First and Last name
+      if(strpos($fullname, " ")) {
+        list($firstName, $lastName) = explode(" ", $fullname); // Split First and Last name
+      }
+      else {
+        $firstName = $fullname;
+      }
+
       $sessionId = bin2hex(random_bytes(16));
 
       $user = new Users;
@@ -35,16 +41,19 @@ class UserController extends Controller
       $user->email = $userid;
       $user->password = password_hash($password, CRYPT_BLOWFISH);
       $user->firstName = $firstName;
-      $user->lastName = $lastName;
-      $user->sessionId = $sessionId;
 
+      if(isset($lastName)) {
+          $user->lastName = $lastName;
+      }
+
+      $user->sessionId = $sessionId;
       $user->save();
 
       Cache::forever($userid, $sessionId); // Put the session id in cache forever
-      $cookie = setcookie('sessionUser', $userid); //put the username in a cookie
+      $cookie = new Cookie('sessionUser', $userid);
 
       $redirect_url = 'main/'.strtolower($firstName);
-      return redirect($redirect_url);
+      return redirect($redirect_url)->withCookie($cookie);
     }
 
     public function authenticateUser(Request $request){
@@ -57,9 +66,11 @@ class UserController extends Controller
       $sessionUser = $request->cookie('sessionUser');
 
       // Proceed to cleanup the cookies and cache for the user
-      setcookie('sessionUser', '');
       Cache::forget($sessionUser);
-
+      $cookie = new Cookie('sessionUser', '');
       // Get user from DB, clean his session ID
+
+      //Redirect to main page
+      return redirect('/')->withCookie($cookie);
     }
 }

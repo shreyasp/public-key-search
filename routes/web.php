@@ -11,15 +11,14 @@
 |
 */
 
-// Index Page - Single Action Controller
 $app->get('/', 'ShowIndexPageController');
-
-// Main Page - Single Action Controller
-$app->get('/main/{id}', 'ShowMainPageController');
+$app->get('/main/{id}', ['middleware' => 'usersession', 'uses' => 'ShowMainPageController']);
 
 // Login and Register - UserController
 $app->post('/login', 'UserController@authenticateUser');
 
-$app->get('/logout', 'UserController@logoutUser');
+// Validate for proper input and create a new user
+$app->post('/register', ['middleware' => 'validator', 'uses' => 'UserController@createNewUser']);
 
-$app->post('/register', 'UserController@createNewUser');
+// Logout user
+$app->get('/logout', 'UserController@logoutUser');

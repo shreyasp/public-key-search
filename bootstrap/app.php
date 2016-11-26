@@ -1,5 +1,7 @@
 <?php
 use Illuminate\Redis\RedisServiceProvider;
+use App\Http\Middleware\UserAuth;
+use App\Http\Middleware\FormInputValidation;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -66,6 +68,11 @@ $app->singleton(
 // $app->routeMiddleware([
 //     'auth' => App\Http\Middleware\Authenticate::class,
 // ]);
+
+$app->routeMiddleware([
+  'validator' => App\Http\Middleware\FormInputValidation::class,
+  'usersession' => App\Http\Middleware\UserSession::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
