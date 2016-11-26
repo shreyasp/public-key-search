@@ -22,3 +22,6 @@ $app->post('/register', ['middleware' => 'validator', 'uses' => 'UserController@
 
 // Logout user
 $app->get('/logout', 'UserController@logoutUser');
+
+// GitHub Redirect OAuth
+$app->get('/redirect_oauth', 'GithubAuthController@redirect_oauth');

@@ -11,7 +11,8 @@
         "Illuminate/Http": "^5.3",
         "predis/predis": "^1.1",
         "wn/lumen-generators": "^1.1",
-        "Illuminate/Redis": "^5.3"
+        "Illuminate/Redis": "^5.3",
+        "mashape/unirest-php": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
