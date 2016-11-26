@@ -31,9 +31,9 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li>
-              <form class="navbar-form">
+              <form class="navbar-form" action="/connect_to_github" method="get">
                 <div class="btn-group" role="group">
-                  <button type="button" data-toggle="modal" class="btn btn-default">
+                  <button type="submit" class="btn btn-default">
                     <!-- need to define the login modal -->
                     <span class="fa fa-github-alt"></span> Connect to GitHub
                   </button>

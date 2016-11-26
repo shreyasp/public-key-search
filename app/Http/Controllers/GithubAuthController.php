@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Unirest\Request as uRequest;
+use Symfony\Component\HttpFoundation\Cookie;
+use Illuminate\Support\Facades\DB;
 
 class GithubAuthController extends Controller
 {
@@ -17,17 +19,31 @@ class GithubAuthController extends Controller
   }
 
   //
+  public function connect(Request $request) {
+    $clientId = env('CLIENT_ID');
+    $clientSecret = env('CLIENT_SECRET');
+
+    // $headers = Array('Accept' => 'applcation/json');
+    $query = Array('client_id' => $clientId, 'client_secret' => $clientSecret);
+    $url_query = http_build_query($query);
+
+    return redirect('https://github.com/login/oauth/authorize?'.$url_query);
+  }
+
   public function redirect_oauth(Request $request) {
     // This redirection is two step process, 1. We get code from GH, 2. Post the code and get token
     $response = NULL;
     $accessToken = NULL;
 
+    $clientId = env('CLIENT_ID');
+    $clientSecret = env('CLIENT_SECRET');
+
+    // Connecting for the first time, post-authorizing the application
     if($request->input('code') !== NULL) {
-      // Get the code and use it for getting Access token from github
+      // GH provides a code to consume, and get the access token in return
       $code = $request->input('code');
       $headers = Array('Accept' => 'application/json');
-      $query = Array('code' => $code, 'client_id' => 'e2839380361040bb3f3f',
-        'client_secret' => 'a4577e6bcf71872a3eae3e793ce5ad4fdda36fc4');
+      $query = Array('code' => $code, 'client_id' => $clientId, 'client_secret' => $clientSecret);
 
       $response = uRequest::post('https://github.com/login/oauth/access_token', $headers,
         $query);
@@ -36,6 +52,13 @@ class GithubAuthController extends Controller
       $accessToken = json_decode($json)->access_token;
     }
 
-    
+    $sessionUser = $request->cookie('sessionUser');
+    $firstName = DB::table('users')->where('email', $sessionUser)->value('firstName');
+    // $cookie = new Cookie('github_access_token', $accessToken);
+
+    // Add the values to Social Login table with foreign from user table
+
+    // Finally redirect to
+    return redirect('main/'.$firstName)->withCookie($cookie);
   }
 }
