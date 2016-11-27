@@ -77,7 +77,7 @@ class UserController extends Controller
 
       // Get user from DB, clean his session ID.
       // A dangerous way to update directly in the DB ;), but should be harmless in current context
-      $user = DB::table('users')->where('email', $sessionUser)->update(['sessionId' => NULL]);
+      DB::table('users')->where('email', $sessionUser)->update(['sessionId' => NULL]);
 
       //Redirect to main page
       return redirect('/')->withCookie($cookie);

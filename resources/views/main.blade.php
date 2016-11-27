@@ -31,9 +31,9 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li>
-              <form class="navbar-form" action="/connect_to_github" method="get">
+              <form class="navbar-form">
                 <div class="btn-group" role="group">
-                  <button type="submit" class="btn btn-default">
+                  <button type="button" data-toggle="modal" data-target="#getUsername" class="btn btn-default">
                     <!-- need to define the login modal -->
                     <span class="fa fa-github-alt"></span> Connect to GitHub
                   </button>
@@ -57,6 +57,30 @@
         </div>
       </div>
     </nav>
+
+    <section>
+      <div class="modal fade" id="getUsername">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-body">
+              <form class="form-group" method="get" action="/connect_to_github">
+                <div class="row col-md-offset-1">
+                  <label for="username_input" class="label label-default">GitHub Username</label>
+                </div>
+                <div class="row col-md-offset-1">
+                  <div class="col-md-10 input-group">
+                    <input type="text" class="form-control" name="username" id="username">
+                    <span class="input-group-btn">
+                      <button type="submit" class="btn btn-warning">Submit</button>
+                    </span>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div class="row search-form">
         <div class="col-lg-8 col-md-offset-3">

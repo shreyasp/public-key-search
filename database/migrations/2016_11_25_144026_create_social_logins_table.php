@@ -13,17 +13,19 @@ class CreateSocialLoginsTable extends Migration
      */
     public function up()
     {
+        Schema::enableForeignKeyConstraints();
         Schema::create('social_logins', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 
-            $table->string('authToken', 255);
+            $table->integer('userid')->unsigned();
+            $table->string('userName', 255);
+            $table->string('authToken', 255)->nullable();
             $table->string('websiteName', 255);
         });
 
         Schema::table('social_logins', function (Blueprint $table){
-           $table->integer('userid')->unsigned()->nullable();
-           $table->foreign('userid')->references('id')->on('users')->onDelete('cascade');
+           $table->foreign('userid')->references('id')->on('users');
         });
     }
 
