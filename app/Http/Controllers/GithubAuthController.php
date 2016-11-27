@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use Unirest\Request as uRequest;
-use Symfony\Component\HttpFoundation\Cookie;
+use Unirest\Request\Body;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Cookie;
 use App\SocialLogin;
+use Unirest\Request as uRequest;
 
 class GithubAuthController extends Controller
 {
@@ -79,15 +81,41 @@ class GithubAuthController extends Controller
       $authToken = json_decode($json)->access_token;
     }
 
+    // Get the user from Session User Cookie
+    $sessionUser = $request->cookie('sessionUser');
+
     // Update the authToken in social login table for the user
     $userId = DB::table('users')->where('email', $sessionUser)->value('id');
     DB::table('social_logins')->where('userId', $userId)->update(['authToken' => $authToken]);
 
     // Get the firstName for the user to build URL
-    $sessionUser = $request->cookie('sessionUser');
     $firstName = DB::table('users')->where('email', $sessionUser)->value('firstName');
 
     // Finally redirect to
+    return redirect('main/'.strtolower($firstName));
+  }
+
+
+  public function get_keys(Request $request) {
+    // Get the Session user and the access token to get the SSH key from Github
+    $sessionUser = $request->cookie('sessionUser');
+    $userId = DB::table('users')->where('email', $sessionUser)->value('id');
+    $access_token = DB::table('social_logins')->where('userId', $userId)->value('authToken');
+
+    $githubUser = $request->input('github_username');
+    $headers = Array('Accept' => 'application/vnd.github.v3+json', 'access_token' => $access_token);
+
+    $response = uRequest::get('https://api.github.com/users/'.$githubUser."/keys", $headers);
+    $jsonResponse = \Unirest\Request\Body::Json($response->body);
+    $sshKey = (json_decode($jsonResponse)[0])->key;
+
+    // Push the ssh key to cache and with cookie containing GitHub username
+    Cache::forever($githubUser, $sshKey);
+    $cookie = new Cookie('githubUser', $githubUser);
+
+    // Get First name for the user for generating the URL
+    $firstName = DB::table('users')->where('email', $sessionUser)->value('firstName');
+
     return redirect('main/'.strtolower($firstName))->withCookie($cookie);
   }
 }

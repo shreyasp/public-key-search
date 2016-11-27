@@ -26,3 +26,4 @@ $app->get('/logout', 'UserController@logoutUser');
 // GitHub Connect and Redirect OAuth
 $app->get('/connect_to_github', 'GithubAuthController@connect');
 $app->get('/redirect_oauth', 'GithubAuthController@redirect_oauth');
+$app->get('/get_keys', 'GithubAuthController@get_keys');

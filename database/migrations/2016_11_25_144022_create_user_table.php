@@ -26,7 +26,6 @@ class CreateUserTable extends Migration
             $table->string('sessionId', 255);
 
             $table->unique('email');
-            $table->unique('sessionId');
         });
     }
 

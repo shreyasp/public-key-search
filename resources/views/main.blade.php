@@ -84,13 +84,15 @@
 
     <div class="row search-form">
         <div class="col-lg-8 col-md-offset-3">
-          <div class="input-group">
-            <input type="text" class="form-control" value="">
-            <span class="input-group-btn">
-              <!-- search github users public key -->
-              <button type="button" class="btn btn-default">Search</button>
-            </span>
-          </div>
+          <form action="/get_keys" method="get">
+            <div class="input-group">
+              <input type="text" class="form-control" name="github_username">
+              <span class="input-group-btn" >
+                <!-- search github users public key -->
+                <button type="submit" class="btn btn-default">Search</button>
+              </span>
+            </div>
+          </form>
         </div>
     </div>
     <br>
@@ -100,7 +102,7 @@
       <div class="col-md-offset-3 col-lg-8">
         <label for="key_text_area" class="label label-default">User Public Key</label>
         <!-- render key in the text area -->
-        <textarea id="key_text_area" rows="8" cols="90" readonly="true">Test Key Text</textarea>
+        <textarea id="key_text_area" rows="8" cols="90" readonly="true">{{ $sshKey or 'Please enter GitHub User name to retrieve SSH Public Key'}}</textarea>
       </div>
     </div>
 
