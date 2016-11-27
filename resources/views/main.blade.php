@@ -47,10 +47,11 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hi, {{ $name }} <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <!-- change the password for the user -->
-                <li><a href="#">Settings</a></li>
                 <li role="separator" class="divider"></li>
                 <!-- Clear the session object and log-out user -->
-                <li><a href="/logout">Logout</a></li>
+                <li><a href="/logout">
+                  <span class="fa fa-sign-out"></span> Logout
+                </a></li>
               </ul>
             </li>
           </ul>

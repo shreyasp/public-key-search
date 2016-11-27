@@ -21,7 +21,7 @@ class GithubAuthController extends Controller
       //
   }
 
-  //
+  /************************************************************************************************/
   public function connect(Request $request) {
     // Obtain the Github ClientID and Client Secret from environment
     $clientId = env('CLIENT_ID');
@@ -58,6 +58,7 @@ class GithubAuthController extends Controller
 
   }
 
+  /************************************************************************************************/
   public function redirect_oauth(Request $request) {
     // This redirection is two step process, 1. We get code from GH, 2. Post the code and get token
     $response = NULL;
@@ -95,7 +96,7 @@ class GithubAuthController extends Controller
     return redirect('main/'.strtolower($firstName));
   }
 
-
+  /************************************************************************************************/
   public function get_keys(Request $request) {
     // Get the Session user and the access token to get the SSH key from Github
     $sessionUser = $request->cookie('sessionUser');
@@ -103,11 +104,20 @@ class GithubAuthController extends Controller
     $access_token = DB::table('social_logins')->where('userId', $userId)->value('authToken');
 
     $githubUser = $request->input('github_username');
-    $headers = Array('Accept' => 'application/vnd.github.v3+json', 'access_token' => $access_token);
 
+    // Prepare headers to be sent as GitHub API request for retrieving SSH keys
+    $headers = Array('Accept' => 'application/vnd.github.v3+json', 'access_token' => $access_token);
     $response = uRequest::get('https://api.github.com/users/'.$githubUser."/keys", $headers);
+
     $jsonResponse = \Unirest\Request\Body::Json($response->body);
-    $sshKey = (json_decode($jsonResponse)[0])->key;
+
+    // Check whether user has SSH key or tell no key exists for the user
+    if(!empty(json_decode($jsonResponse))) {
+      $sshKey = (json_decode($jsonResponse)[0])->key;
+    }
+    else {
+      $sshKey = 'No SSH key exists for the given user';
+    }
 
     // Push the ssh key to cache and with cookie containing GitHub username
     Cache::forever($githubUser, $sshKey);
