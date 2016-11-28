@@ -32,6 +32,10 @@ class GithubAuthController extends Controller
     $userId = DB::table('users')->where('email', $sessionUser)->value('id');
     $userName = $request->input('username');
 
+    // Build the query to authorize the application
+    $query = Array('client_id' => $clientId, 'client_secret' => $clientSecret);
+    $url_query = http_build_query($query);
+
     // Check whether DB already has record
     $account = new SocialLogin();
     $record = $account->query()->where('userId', $userId)->where('userName', $userName)->first();
@@ -43,10 +47,11 @@ class GithubAuthController extends Controller
       $account->userName = $userName;
       $account->save();
 
-      // Build the query to authorize the application
-      $query = Array('client_id' => $clientId, 'client_secret' => $clientSecret);
-      $url_query = http_build_query($query);
-
+      // Redirect to GH for authorizing the application
+      return redirect('https://github.com/login/oauth/authorize?'.$url_query);
+    }
+    // Record is created but somehow authorization token was not obtained
+    elseif(!isset($record->authToken)) {
       // Redirect to GH for authorizing the application
       return redirect('https://github.com/login/oauth/authorize?'.$url_query);
     }
